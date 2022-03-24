@@ -1,0 +1,20 @@
+-- อัพเดตข้อมูล โดยที่ Select มาดูข้อมูลก่อน แล้วอัพเดตตามเงื่อนไข
+
+WITH UPD_data AS(
+SELECT col1, col2, col3 , col4,
+	CASE 
+		WHEN col3 = 'H' THEN 'จันทร์ - ศุกร์  8:30 น. - 17:00 น.'
+		WHEN col3 = 'P' THEN 'จันทร์ - ศุกร์  8:30 น. - 16:30 น., เสาร์ 8.30 น. - 12.00 น.'
+		WHEN col3 = 'M' THEN 'จันทร์ - ศุกร์  9:00 น. - 17:00 น. , เสาร์ 9.00 น. - 12.00 น.'
+		WHEN col1 IN ('823','815','835') THEN 'จันทร์ - อาทิตย์  10:00 น. - 17:00 น.' 
+		WHEN col1 = '812' THEN 'จันทร์ - อาทิตย์  8:00 น. - 17:00 น.' 
+		WHEN col1 IN ('814','826','842') THEN 'จันทร์ - อาทิตย์  10:30 น. - 17:00 น.'
+		WHEN col1 IN ('821','830','831','833','851') THEN 'จันทร์ - อาทิตย์  11:00 น. - 17:00 น.'
+		WHEN col1 IN ('850','852') THEN 'จันทร์ - อาทิตย์  8:30 น. - 17:00 น.'
+		END AS open_hour
+	FROM schema.table1 
+)
+UPDATE schema.table1 
+set col4 = UPD_data.open_hour
+from UPD_data
+where schema.table1.col1 = UPD_data.col1;
